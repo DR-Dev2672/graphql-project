@@ -4,10 +4,12 @@ import cors from 'cors';
 
 
 const app=express();
-router=express.Router();
 
-router.get('/',(req,res)=>{
-    res.send("Hello World");
+
+app.use('/',(req,res)=>{
+    res.json({
+        message:"Hello from the backend"
+    },{status:200})
 }
 )
 
