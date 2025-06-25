@@ -3,6 +3,7 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import {ApolloServer} from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import axios from 'axios';
 
 
 const books=[
@@ -17,17 +18,43 @@ const books=[
 ]
 
 const typeDefs=`
+type User{
+id:ID!,
+name:String!,
+email:String!,
+username:String!,
+website:String,
+phone:String!
+},
+
+type Todos{
+id:ID!,
+title:String!,
+completed:Boolean!
+},
+
+
 type Book{
 title:String,
 author:String
 },
+
+
 type Query{
+getAllTodos:[Todos]
 books:[Book]
+getAllUsers:[User]
 }
 `
 const resolvers={
     Query:{
         books:()=>books,
+        getAllUsers:async()=>{
+        (await  axios.get('https://jsonplaceholder.typicode.com/users')).data
+        },
+        getAllTodos:async()=>{
+            (await  axios.get('https://jsonplaceholder.typicode.com/todos')).data
+        }
     }
 }
 
