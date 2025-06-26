@@ -42,19 +42,20 @@ author:String
 
 
 type Query{
-getAllTodos:[Todos]
+getTodos:[Todos]
 books:[Book]
 getAllUsers:[User]
 getUser(id:ID!):User
-getTodos(id:ID!):Todos
+
 }
+
 `
 const resolvers={
 
     
          Todos:{
-        user:async(todo)=>(
-            await axios.get(`https://jsonplaceholder.typicode.com/users/${todo.id}`)
+        user:async(todos)=>(
+            await axios.get(`https://jsonplaceholder.typicode.com/users/${todos.id}`)
         ).data
 
     },
@@ -65,10 +66,10 @@ const resolvers={
         getAllUsers:async()=>
         (await  axios.get('https://jsonplaceholder.typicode.com/users')).data,
         
-        getAllTodos:async()=>
+        getTodos:async()=>
             (await  axios.get('https://jsonplaceholder.typicode.com/todos')).data,
-        getTodos:async(parent,{id})=>
-            (await  axios.get(`https://jsonplaceholder.typicode.com/todos/${id}`)).data
+        getUser:async(parent,{id})=>
+            (await  axios.get(`https://jsonplaceholder.typicode.com/users/${id}`)).data
         
     }
 }
