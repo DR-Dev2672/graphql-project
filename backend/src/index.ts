@@ -30,7 +30,8 @@ phone:String!
 type Todos{
 id:ID!,
 title:String!,
-completed:Boolean!
+completed:Boolean!,
+user:User
 },
 
 
@@ -44,16 +45,30 @@ type Query{
 getAllTodos:[Todos]
 books:[Book]
 getAllUsers:[User]
+getUser(id:ID!):User
+getTodos(id:ID!):Todos
 }
 `
 const resolvers={
+
+    
+         Todos:{
+        user:async(todo)=>(
+            await axios.get(`https://jsonplaceholder.typicode.com/users/${todo.id}`)
+        ).data
+
+    },
+
+   
     Query:{
         books:()=>books,
         getAllUsers:async()=>
         (await  axios.get('https://jsonplaceholder.typicode.com/users')).data,
         
         getAllTodos:async()=>
-            (await  axios.get('https://jsonplaceholder.typicode.com/todos')).data
+            (await  axios.get('https://jsonplaceholder.typicode.com/todos')).data,
+        getTodos:async(parent,{id})=>
+            (await  axios.get(`https://jsonplaceholder.typicode.com/todos/${id}`)).data
         
     }
 }
