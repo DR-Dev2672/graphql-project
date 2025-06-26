@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import {ApolloServer} from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import axios from 'axios';
-import {expressMiddleware} from '@apollo/server/express4';
+
 
 const books=[
     {
@@ -49,32 +49,24 @@ getAllUsers:[User]
 const resolvers={
     Query:{
         books:()=>books,
-        getAllUsers:async()=>{
-        (await  axios.get('https://jsonplaceholder.typicode.com/users')).data
-        },
-        getAllTodos:async()=>{
+        getAllUsers:async()=>
+        (await  axios.get('https://jsonplaceholder.typicode.com/users')).data,
+        
+        getAllTodos:async()=>
             (await  axios.get('https://jsonplaceholder.typicode.com/todos')).data
-        }
+        
     }
 }
-const app=express();
-app.use(cors());    
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 
 const server=new ApolloServer({
     typeDefs,
     resolvers,
 })
 
-
-await server.start();
-app.use('/graphql', expressMiddleware(server));
-
-app.listen(4000, () => {
-    console.log('Server is running ');  
-});
+const {url}=await startStandaloneServer(server, {
+    listen: { port: 4000 },
+})
 
 
-console.log(` Server ready at:4000 `);
+console.log(` Server ready at: ${url}`);
 
