@@ -4,7 +4,7 @@ import bodyParser from 'body-parser';
 import {ApolloServer} from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
 import axios from 'axios';
-
+import {expressMiddleware} from '@apollo/server/express4';
 
 const books=[
     {
@@ -57,16 +57,24 @@ const resolvers={
         }
     }
 }
+const app=express();
+app.use(cors());    
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 const server=new ApolloServer({
     typeDefs,
     resolvers,
 })
 
-const {url}=await startStandaloneServer(server, {
-    listen: { port: 4000 },
-})
+
+await server.start();
+app.use('/graphql', expressMiddleware(server));
+
+app.listen(4000, () => {
+    console.log('Server is running ');  
+});
 
 
-console.log(` Server ready at: ${url}`);
+console.log(` Server ready at:4000 `);
 
